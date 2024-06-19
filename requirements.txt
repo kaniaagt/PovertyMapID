@@ -11,3 +11,4 @@ matplotlib.pyplot
 folium
 treamlit_folium
 branca.element
+PIL
