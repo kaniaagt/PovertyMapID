@@ -1,0 +1,14 @@
+streamlit
+streamlit_option_menu
+pandas
+sklearn.preprocessing
+sklearn.metrics
+seaborn
+pyclustering.cluster.clarans
+plotly.express
+geopandas
+matplotlib.pyplot
+folium
+treamlit_folium
+branca.element
+PIL
