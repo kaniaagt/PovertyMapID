@@ -30,12 +30,6 @@ def app():
             font-size: 20px;
             font-weight: bold;
         }
-        .map-container {
-            margin-bottom: 0px; /* Adjust the margin as needed */
-        }
-        .markdown-container {
-            margin-top: 0px; /* Adjust the margin as needed */
-        }
         </style>
         """,
         unsafe_allow_html=True,
@@ -57,64 +51,48 @@ def app():
 
     indo_location = [-2.49607,117.89587]
 
-    with st.container():  # Using container to group map and markdown closely
-        # Create the map
-        st.markdown('<div class="map-container">', unsafe_allow_html=True)
-        m = folium.Map(location=indo_location, zoom_start=5)
+    m = folium.Map(location=indo_location, zoom_start=5)
 
-        # Add GeoJson data with custom style function
-        def style_function(feature):
-            cluster = feature['properties']['Cluster']
-            return {'fillColor': cluster_color_map.get(cluster, '#ffffff'), 'color': '#000000', 'fillOpacity': 0.5, 'weight': 1}
+    # Add GeoJson data with custom style function
+    def style_function(feature):
+        cluster = feature['properties']['Cluster']
+        return {'fillColor': cluster_color_map.get(cluster, '#ffffff'), 'color': '#000000', 'fillOpacity': 0.5, 'weight': 1}
 
-        # Add GeoJson layer to the map
-        folium.GeoJson(
-            merged,
-            name='Clustered Areas',
-            style_function=style_function
-        ).add_to(m)
+    # Add GeoJson layer to the map
+    folium.GeoJson(
+        merged,
+        name='Clustered Areas',
+        style_function=style_function
+    ).add_to(m)
 
-        # Create the legend template as an HTML element
-        legend_template = """
-        {% macro html(this, kwargs) %}
-        <div id='maplegend' class='maplegend' 
-            style='position: absolute; z-index: 9999; background-color: rgba(255, 255, 255, 0.5);
-            border-radius: 6px; padding: 10px; font-size: 10.5px; right: 20px; top: 20px;'>     
-        <div class='legend-scale'>
-        <ul class='legend-labels'>
-            <li><span style='background: yellow; opacity: 0.75;'></span>Cluster 0</li>
-            <li><span style='background: red; opacity: 0.75;'></span>Cluster 1</li>
-            <li><span style='background: orange; opacity: 0.75;'></span>Cluster 2</li>
-        </ul>
-        </div>
-        </div> 
-        <style type='text/css'>
-        .maplegend .legend-scale ul {margin: 0; padding: 0; color: #0f0f0f;}
-        .maplegend .legend-scale ul li {list-style: none; line-height: 18px; margin-bottom: 1.5px;}
-        .maplegend ul.legend-labels li span {float: left; height: 16px; width: 16px; margin-right: 4.5px;}
-        </style>
-        {% endmacro %}
-        """
-        
-        # Add the legend to the map
-        macro = MacroElement()
-        macro._template = Template(legend_template)
-        m.get_root().add_child(macro)
+    # Create the legend template as an HTML element
+    legend_template = """
+    {% macro html(this, kwargs) %}
+    <div id='maplegend' class='maplegend' 
+        style='position: absolute; z-index: 9999; background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 6px; padding: 10px; font-size: 10.5px; right: 20px; top: 20px;'>     
+    <div class='legend-scale'>
+    <ul class='legend-labels'>
+        <li><span style='background: yellow; opacity: 0.75;'></span>Cluster 0</li>
+        <li><span style='background: red; opacity: 0.75;'></span>Cluster 1</li>
+        <li><span style='background: orange; opacity: 0.75;'></span>Cluster 2</li>
+    </ul>
+    </div>
+    </div> 
+    <style type='text/css'>
+    .maplegend .legend-scale ul {margin: 0; padding: 0; color: #0f0f0f;}
+    .maplegend .legend-scale ul li {list-style: none; line-height: 18px; margin-bottom: 1.5px;}
+    .maplegend ul.legend-labels li span {float: left; height: 16px; width: 16px; margin-right: 4.5px;}
+    </style>
+    {% endmacro %}
+    """
+    
+    # Add the legend to the map
+    macro = MacroElement()
+    macro._template = Template(legend_template)
+    m.get_root().add_child(macro)
 
-        st_folium(m, width=725, height=400, returned_objects=[])
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        # Display the markdown closely below the map
-        st.markdown('<div class="markdown-container">', unsafe_allow_html=True)
-        st.markdown('Keterangan:')
-        if df['Cluster'].nunique() == 2:
-            st.markdown('0 = Merah')
-            st.markdown('1 = Hijau Neon')
-        elif df['Cluster'].nunique() == 3:
-            st.markdown('0 = Merah')
-            st.markdown('1 = Hijau Neon')
-            st.markdown('2 = Biru')
-        st.markdown('</div>', unsafe_allow_html=True)
+    st_folium(m, width=725, height=400, returned_objects=[])
 
     with st.expander("Tentang Data"):
         st.markdown('<p class="center-text">Tabel Data</p>', unsafe_allow_html=True)
