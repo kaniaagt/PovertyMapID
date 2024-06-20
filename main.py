@@ -22,7 +22,7 @@ class MultipagesApp:
                 options=['Beranda', 'Peta', 'Clustering'],
                 icons=['question-circle', 'geo-alt', 'columns-gap'],
                 menu_icon='map-fill',
-                default_index=1,
+                default_index=0,
                 styles={
                     "container": {"padding": "10", "background-color": "grey"},
                     "icon": {"color": "white", "font-size": "20px"},
